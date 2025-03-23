@@ -8,7 +8,8 @@ import {
 import type { HeaderQuery, CartApiQueryFragment } from 'storefrontapi.generated';
 import { useAside } from '~/components/Aside';
 import { twMerge } from 'tailwind-merge';
-import { ShoppingCart } from 'lucide-react';
+import { MenuIcon, ShoppingCart } from 'lucide-react';
+import { Button } from './ui/button';
 
 interface HeaderProps {
   header: HeaderQuery;
@@ -27,13 +28,15 @@ export function Header({
 }: HeaderProps) {
   const { shop, menu } = header;
   return (
-    <header className="h-32">
-      <div className='px-4 max-w-7xl mx-auto h-18 grid grid-cols-3 w-full items-center'>
-        <div></div>
+    <header className="">
+      <div className='px-4 max-w-7xl mx-auto h-24 grid grid-cols-3 w-full items-center'>
+        <div className='block md:hidden'>
+          <HeaderMenuMobileToggle />
+        </div>
 
 
         <NavLink className='text-center' prefetch="intent" to="/" style={activeLinkStyle} end>
-          <strong>{shop.name}</strong>
+          <strong className=' text-xl md:text-4xl uppercase font-extrabold'>Trgovina</strong>
         </NavLink>
 
         <div className='flex justify-end'>
@@ -61,48 +64,96 @@ export function HeaderMenu({
   viewport: Viewport;
   publicStoreDomain: HeaderProps['publicStoreDomain'];
 }) {
-  // const className = `header-menu-${viewport}`;
   const { close } = useAside();
 
+  // Desktop Navigation - Horizontal list
+  if (viewport === 'desktop') {
+    return (
+      <nav className={twMerge("h-16 bg-gradient-to-r from-teal-400 via-purple-500 to-orange-500 text-white shadow-lg hidden md:block")} role="navigation">
+        <div className='max-w-4xl mx-auto h-full w-full px-4'>
+          <ul className='flex items-center justify-center h-full gap-8'>
+            {(menu || FALLBACK_HEADER_MENU).items.map((item) => {
+              if (!item.url) return null;
+
+              // if the url is internal, we strip the domain
+              const url =
+                item.url.includes('myshopify.com') ||
+                  item.url.includes(publicStoreDomain) ||
+                  item.url.includes(primaryDomainUrl)
+                  ? new URL(item.url).pathname
+                  : item.url;
+
+              return (
+                <li key={item.id} className="list-none">
+                  <NavLink
+                    className="font-black uppercase hover:text-white hover:scale-105 hover:-translate-y-1 transform transition-all duration-300 py-1 relative group inline-block"
+                    end
+                    onClick={close}
+                    prefetch="intent"
+                    to={url}
+                  >
+                    <span className="group-hover:rotate-[-1deg] inline-block transition-transform duration-300">
+                      {item.title}
+                    </span>
+                    <div className="absolute bottom-0 left-0 w-0 h-1 bg-orange-500 group-hover:w-full transition-all duration-300"></div>
+                  </NavLink>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </nav>
+    );
+  }
+
+  // Mobile Navigation - Vertical list
   return (
-    <nav className={twMerge("h-16  bg-gray-100 text-white flex items-center")} role="navigation">
-      <div className='max-w-4xl mx-auto w-full flex items-center gap-4 uppercase'>
-        {viewport === 'mobile' && (
-          <NavLink
-            end
-            onClick={close}
-            className={"flex-grow"}
-            prefetch="intent"
-            style={activeLinkStyle}
-            to="/"
-          >
-            Home
-          </NavLink>
-        )}
-        {(menu || FALLBACK_HEADER_MENU).items.map((item) => {
-          if (!item.url) return null;
+    <nav className={twMerge("bg-gradient-to-r from-teal-400 via-purple-500 to-orange-500 text-white shadow-lg md:hidden")} role="navigation">
+      <div className="p-4">
+        {/* Mobile Header Bar */}
 
-          // if the url is internal, we strip the domain
-          const url =
-            item.url.includes('myshopify.com') ||
-              item.url.includes(publicStoreDomain) ||
-              item.url.includes(primaryDomainUrl)
-              ? new URL(item.url).pathname
-              : item.url;
-          return (
+
+        {/* Mobile Navigation Links */}
+        <ul className="flex flex-col gap-3 py-2">
+          <li>
             <NavLink
-              className="flex-grow"
               end
-              key={item.id}
               onClick={close}
+              className="font-black uppercase text-lg block py-3 px-4 bg-white bg-opacity-10 rounded-xl transform transition-all hover:bg-opacity-20 hover:scale-105"
               prefetch="intent"
-              to={url}
+              style={activeLinkStyle}
+              to="/"
             >
-              {item.title}
+              Home
             </NavLink>
-          );
-        })}
+          </li>
 
+          {(menu || FALLBACK_HEADER_MENU).items.map((item) => {
+            if (!item.url) return null;
+
+            // if the url is internal, we strip the domain
+            const url =
+              item.url.includes('myshopify.com') ||
+                item.url.includes(publicStoreDomain) ||
+                item.url.includes(primaryDomainUrl)
+                ? new URL(item.url).pathname
+                : item.url;
+
+            return (
+              <li key={item.id}>
+                <NavLink
+                  className="font-black uppercase text-lg block py-3 px-4 bg-white bg-opacity-10 rounded-xl transform transition-all hover:bg-opacity-20 hover:scale-105"
+                  end
+                  onClick={close}
+                  prefetch="intent"
+                  to={url}
+                >
+                  {item.title}
+                </NavLink>
+              </li>
+            );
+          })}
+        </ul>
       </div>
     </nav>
   );
@@ -113,12 +164,11 @@ function HeaderCtas({
   cart,
 }: Pick<HeaderProps, 'isLoggedIn' | 'cart'>) {
   return (
-    <nav className="header-ctas" role="navigation">
-      <HeaderMenuMobileToggle />
-      <NavLink prefetch="intent" to="/account" style={activeLinkStyle}>
-        <Suspense fallback="Sign in">
-          <Await resolve={isLoggedIn} errorElement="Sign in">
-            {(isLoggedIn) => (isLoggedIn ? 'Account' : 'Sign in')}
+    <nav className="flex items-center gap-4" role="navigation">
+      <NavLink prefetch="intent" to="/account" style={activeLinkStyle} className="hidden md:block">
+        <Suspense fallback="Prijava">
+          <Await resolve={isLoggedIn} errorElement="Prijava">
+            {(isLoggedIn) => <Button variant={"link"}>{isLoggedIn ? 'Moj račun' : 'Prijava'}</Button>}
           </Await>
         </Suspense>
       </NavLink>
@@ -131,21 +181,18 @@ function HeaderCtas({
 function HeaderMenuMobileToggle() {
   const { open } = useAside();
   return (
-    <button
-      className="header-menu-mobile-toggle reset"
-      onClick={() => open('mobile')}
-    >
-      <h3>☰</h3>
-    </button>
+    <Button variant={"link"} className="block md:hidden" onClick={() => open('mobile')}>
+      <MenuIcon />
+    </Button>
   );
 }
 
 function SearchToggle() {
   const { open } = useAside();
   return (
-    <button className="reset" onClick={() => open('search')}>
-      Search
-    </button>
+    <Button variant={"link"} className="hidden md:block" onClick={() => open('search')}>
+      Išči
+    </Button>
   );
 }
 
@@ -154,27 +201,31 @@ function CartBadge({ count }: { count: number | null }) {
   const { publish, shop, cart, prevCart } = useAnalytics();
 
   return (
-    <a
-      href="/cart"
-      className="relative flex items-center gap-2 p-2 text-gray-700 hover:text-gray-900 transition-colors"
-      onClick={(e) => {
-        e.preventDefault();
-        open('cart');
-        publish('cart_viewed', {
-          cart,
-          prevCart,
-          shop,
-          url: window.location.href || '',
-        });
-      }}
-    >
-      <ShoppingCart size={20} />
-      <span className="font-medium">Košarica</span>
-      {count !== null && count > 0 && (
-        <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-          {count > 99 ? '99+' : count}
-        </span>
-      )}
+    <a href="/cart">
+      <Button
+        variant={"link"}
+
+        className="relative flex items-center gap-2 p-2 text-gray-700 hover:text-gray-900 transition-colors"
+        onClick={(e) => {
+          e.preventDefault();
+          open('cart');
+          publish('cart_viewed', {
+            cart,
+            prevCart,
+            shop,
+            url: window.location.href || '',
+          });
+        }}
+      >
+        <ShoppingCart size={20} />
+        <span className="hidden md:block font-medium">Košarica</span>
+        {count !== null && count > 0 && (
+          <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+            {count > 99 ? '99+' : count}
+          </span>
+        )}
+
+      </Button>
     </a>
   );
 }

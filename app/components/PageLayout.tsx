@@ -19,6 +19,8 @@ import { CardContent } from './ui/card';
 import { Separator } from './ui/separator';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { FooterCustom } from './layout/footer-custom';
 
 interface PageLayoutProps {
   cart: Promise<CartApiQueryFragment | null>;
@@ -51,6 +53,7 @@ export function PageLayout({
         />
       )}
       <main>{children}</main>
+      <FooterCustom></FooterCustom>
       <Footer
         footer={footer}
         header={header}
@@ -62,8 +65,8 @@ export function PageLayout({
 
 function CartAside({ cart }: { cart: PageLayoutProps['cart'] }) {
   return (
-    <Aside type="cart" heading="CART">
-      <Suspense fallback={<p>Loading cart ...</p>}>
+    <Aside type="cart" heading="košarica">
+      <Suspense fallback={<p>Nalagam košarico ...</p>}>
         <Await resolve={cart}>
           {(cart) => {
             return <CartMain cart={cart} layout="aside" />;
@@ -77,15 +80,15 @@ function CartAside({ cart }: { cart: PageLayoutProps['cart'] }) {
 function SearchAside() {
   const queriesDatalistId = useId();
   return (
-    <Aside type="search" heading="SEARCH">
+    <Aside type="search" heading="iskanje">
       <div className="p-4 flex flex-col gap-6">
         <SearchFormPredictive>
           {({ fetchResults, goToSearch, inputRef }) => (
-            <div className="relative rounded-lg bg-gray-100 flex items-center overflow-hidden">
+            <div className="relative rounded-lg  flex gap-2 items-center overflow-hidden">
               <div className="absolute left-3 text-gray-500 pointer-events-none">
                 <Search size={18} />
               </div>
-              <input
+              <Input
                 name="q"
                 onChange={fetchResults}
                 onFocus={fetchResults}
@@ -95,12 +98,12 @@ function SearchAside() {
                 list={queriesDatalistId}
                 className="w-full py-3 pl-10 pr-3 bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary placeholder:text-gray-400"
               />
-              <button
+              <Button
                 onClick={goToSearch}
-                className="bg-primary hover:bg-primary/90 text-white font-medium py-3 px-4 transition-colors"
+
               >
-                Search
-              </button>
+                Išči
+              </Button>
             </div>
           )}
         </SearchFormPredictive>
@@ -113,7 +116,7 @@ function SearchAside() {
               return (
                 <div className="flex justify-center items-center py-8 text-gray-500">
                   <Loader2 className="animate-spin mr-2" size={20} />
-                  <span>Searching...</span>
+                  <span>Iščem...</span>
                 </div>
               );
             }

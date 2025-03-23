@@ -74,7 +74,7 @@ export function CartLineItem({
           </Link>
 
           <div className="mt-1 text-sm text-muted-foreground">
-            <ProductPrice price={line?.cost?.totalAmount} className="font-semibold text-foreground" />
+            <ProductPrice price={line?.cost?.totalAmount} />
           </div>
 
           {selectedOptions.length > 0 && (

@@ -1,11 +1,14 @@
-import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {Link, useLoaderData, type MetaFunction} from '@remix-run/react';
-import {Image, getPaginationVariables} from '@shopify/hydrogen';
-import type {ArticleItemFragment} from 'storefrontapi.generated';
-import {PaginatedResourceSection} from '~/components/PaginatedResourceSection';
+import { type LoaderFunctionArgs } from '@shopify/remix-oxygen';
+import { Link, useLoaderData, type MetaFunction } from '@remix-run/react';
+import { Image, getPaginationVariables } from '@shopify/hydrogen';
+import type { ArticleItemFragment } from 'storefrontapi.generated';
+import { PaginatedResourceSection } from '~/components/PaginatedResourceSection';
+import { Card, CardContent, CardFooter } from '~/components/ui/card';
+import { ArrowRight, Calendar } from 'lucide-react';
+import { Button } from '~/components/ui/button';
 
-export const meta: MetaFunction<typeof loader> = ({data}) => {
-  return [{title: `Hydrogen | ${data?.blog.title ?? ''} blog`}];
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  return [{ title: `Hydrogen | ${data?.blog.title ?? ''} blog` }];
 };
 
 export async function loader(args: LoaderFunctionArgs) {
@@ -15,7 +18,7 @@ export async function loader(args: LoaderFunctionArgs) {
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
 
-  return {...deferredData, ...criticalData};
+  return { ...deferredData, ...criticalData };
 }
 
 /**
@@ -32,10 +35,10 @@ async function loadCriticalData({
   });
 
   if (!params.blogHandle) {
-    throw new Response(`blog not found`, {status: 404});
+    throw new Response(`blog not found`, { status: 404 });
   }
 
-  const [{blog}] = await Promise.all([
+  const [{ blog }] = await Promise.all([
     context.storefront.query(BLOGS_QUERY, {
       variables: {
         blogHandle: params.blogHandle,
@@ -46,10 +49,10 @@ async function loadCriticalData({
   ]);
 
   if (!blog?.articles) {
-    throw new Response('Not found', {status: 404});
+    throw new Response('Not found', { status: 404 });
   }
 
-  return {blog};
+  return { blog };
 }
 
 /**
@@ -57,20 +60,22 @@ async function loadCriticalData({
  * fetched after the initial page load. If it's unavailable, the page should still 200.
  * Make sure to not throw any errors here, as it will cause the page to 500.
  */
-function loadDeferredData({context}: LoaderFunctionArgs) {
+function loadDeferredData({ context }: LoaderFunctionArgs) {
   return {};
 }
-
 export default function Blog() {
-  const {blog} = useLoaderData<typeof loader>();
-  const {articles} = blog;
+  const { blog } = useLoaderData<typeof loader>();
+  const { articles } = blog;
 
   return (
-    <div className="blog">
-      <h1>{blog.title}</h1>
-      <div className="blog-grid">
-        <PaginatedResourceSection connection={articles}>
-          {({node: article, index}) => (
+    <div className="w-full max-w-7xl mx-auto px-4 py-12">
+      <div className="mb-12">
+        <h1 className="text-4xl md:text-6xl font-bold mb-6 text-navy-900">{blog.title}</h1>
+      </div>
+
+      <div>
+        <PaginatedResourceSection connection={articles} resourcesClassName='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+          {({ node: article, index }) => (
             <ArticleItem
               article={article}
               key={article.id}
@@ -95,24 +100,41 @@ function ArticleItem({
     month: 'long',
     day: 'numeric',
   }).format(new Date(article.publishedAt!));
+
   return (
-    <div className="blog-article" key={article.id}>
-      <Link to={`/blogs/${article.blog.handle}/${article.handle}`}>
+    <Card className="">
+      <Link
+        to={`/blogs/${article.blog.handle}/${article.handle}`}
+        className="block h-full"
+      >
         {article.image && (
-          <div className="blog-article-image">
+          <div className="relative aspect-[3/2] h-96 overflow-hidden bg-gray-100">
             <Image
               alt={article.image.altText || article.title}
               aspectRatio="3/2"
               data={article.image}
               loading={loading}
               sizes="(min-width: 768px) 50vw, 100vw"
+              className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105"
             />
           </div>
         )}
-        <h3>{article.title}</h3>
-        <small>{publishedAt}</small>
+
+        <CardContent className="p-4">
+          <h3 className="font-medium text-lg text-gray-900 mb-2 line-clamp-2">{article.title}</h3>
+          <div className="flex items-center text-sm text-gray-500">
+            <Calendar className="w-4 h-4 mr-2" />
+            <span>{publishedAt}</span>
+          </div>
+        </CardContent>
+
+        <CardFooter className="pt-0 pb-4 px-4">
+          <Button variant="outline" className="w-full border-gray-300 hover:bg-gray-50 gap-2">
+            Read Article <ArrowRight className="h-4 w-4" />
+          </Button>
+        </CardFooter>
       </Link>
-    </div>
+    </Card >
   );
 }
 

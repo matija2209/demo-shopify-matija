@@ -1,5 +1,5 @@
-import {type LoaderFunctionArgs} from '@shopify/remix-oxygen';
-import {useLoaderData, type MetaFunction} from '@remix-run/react';
+import { type LoaderFunctionArgs } from '@shopify/remix-oxygen';
+import { useLoaderData, type MetaFunction } from '@remix-run/react';
 import {
   getSelectedProductOptions,
   Analytics,
@@ -8,13 +8,18 @@ import {
   getAdjacentAndFirstAvailableVariants,
   useSelectedOptionInUrlParam,
 } from '@shopify/hydrogen';
-import {ProductPrice} from '~/components/ProductPrice';
-import {ProductImage} from '~/components/ProductImage';
-import {ProductForm} from '~/components/ProductForm';
+import { ProductPrice } from '~/components/ProductPrice';
+import { ProductImage } from '~/components/ProductImage';
+import { ProductForm } from '~/components/ProductForm';
+import { Card, CardContent } from '~/components/ui/card';
+import { Badge } from '~/components/ui/badge';
+import { Separator } from '~/components/ui/separator';
+import { twMerge } from 'tailwind-merge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs';
 
-export const meta: MetaFunction<typeof loader> = ({data}) => {
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [
-    {title: `Hydrogen | ${data?.product.title ?? ''}`},
+    { title: `Hydrogen | ${data?.product.title ?? ''}` },
     {
       rel: 'canonical',
       href: `/products/${data?.product.handle}`,
@@ -29,7 +34,7 @@ export async function loader(args: LoaderFunctionArgs) {
   // Await the critical data required to render initial state of the page
   const criticalData = await loadCriticalData(args);
 
-  return {...deferredData, ...criticalData};
+  return { ...deferredData, ...criticalData };
 }
 
 /**
@@ -41,22 +46,22 @@ async function loadCriticalData({
   params,
   request,
 }: LoaderFunctionArgs) {
-  const {handle} = params;
-  const {storefront} = context;
+  const { handle } = params;
+  const { storefront } = context;
 
   if (!handle) {
     throw new Error('Expected product handle to be defined');
   }
 
-  const [{product}] = await Promise.all([
+  const [{ product }] = await Promise.all([
     storefront.query(PRODUCT_QUERY, {
-      variables: {handle, selectedOptions: getSelectedProductOptions(request)},
+      variables: { handle, selectedOptions: getSelectedProductOptions(request) },
     }),
     // Add other queries here, so that they are loaded in parallel
   ]);
 
   if (!product?.id) {
-    throw new Response(null, {status: 404});
+    throw new Response(null, { status: 404 });
   }
 
   return {
@@ -69,15 +74,17 @@ async function loadCriticalData({
  * fetched after the initial page load. If it's unavailable, the page should still 200.
  * Make sure to not throw any errors here, as it will cause the page to 500.
  */
-function loadDeferredData({context, params}: LoaderFunctionArgs) {
+function loadDeferredData({ context, params }: LoaderFunctionArgs) {
   // Put any API calls that is not critical to be available on first page render
   // For example: product reviews, product recommendations, social feeds.
 
   return {};
 }
 
+
+
 export default function Product() {
-  const {product} = useLoaderData<typeof loader>();
+  const { product } = useLoaderData<typeof loader>();
 
   // Optimistically selects a variant with given available variant information
   const selectedVariant = useOptimisticVariant(
@@ -95,31 +102,102 @@ export default function Product() {
     selectedOrFirstAvailableVariant: selectedVariant,
   });
 
-  const {title, descriptionHtml} = product;
+  const { title, descriptionHtml, vendor } = product;
+
+  // Check if product is on sale
+  const isOnSale = selectedVariant?.compareAtPrice &&
+    selectedVariant.compareAtPrice.amount > selectedVariant.price.amount;
 
   return (
-    <div className="product">
-      <ProductImage image={selectedVariant?.image} />
-      <div className="product-main">
-        <h1>{title}</h1>
-        <ProductPrice
-          price={selectedVariant?.price}
-          compareAtPrice={selectedVariant?.compareAtPrice}
-        />
-        <br />
-        <ProductForm
-          productOptions={productOptions}
-          selectedVariant={selectedVariant}
-        />
-        <br />
-        <br />
-        <p>
-          <strong>Description</strong>
-        </p>
-        <br />
-        <div dangerouslySetInnerHTML={{__html: descriptionHtml}} />
-        <br />
+    <div className="max-w-7xl mx-auto px-4 py-8 md:py-12 relative">
+      {/* Background elements */}
+      <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-teal-400 via-purple-500 to-orange-500"></div>
+      <div className="absolute -top-12 -left-12 w-32 h-32 rounded-full bg-purple-500/10 blur-xl"></div>
+      <div className="absolute -bottom-8 right-8 w-40 h-40 rounded-full bg-teal-400/10 blur-xl"></div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16 relative z-10">
+        {/* Product Image Column */}
+        <div className="rounded-xl overflow-hidden bg-white border-2 border-purple-300 shadow-lg relative">
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-teal-400 via-purple-500 to-orange-500 z-10"></div>
+          <ProductImage image={selectedVariant?.image} />
+          {isOnSale && (
+            <div className="absolute top-4 left-4 bg-gradient-to-r from-red-500 to-orange-500 text-white font-bold py-1 px-3 rounded-full transform rotate-[-2deg] shadow-md">
+              SALE
+            </div>
+          )}
+        </div>
+
+        {/* Product Info Column */}
+        <Card className="border-2 border-purple-300 shadow-lg rounded-xl overflow-hidden">
+          <CardContent className="p-6 space-y-6">
+            {/* Vendor Badge */}
+            {vendor && (
+              <Badge variant="outline" className="text-sm font-bold border-2 border-purple-500 px-3 py-1 rounded-full">
+                {"Oblačila Vibes"}
+              </Badge>
+            )}
+
+            {/* Title */}
+            <h1 className="text-3xl font-bold tracking-tight rotate-[-1deg] transform inline-block pb-1 border-b-4 border-orange-400">
+              {title}
+            </h1>
+
+            {/* Product Form */}
+            <div className="space-y-6">
+              <ProductForm
+                productOptions={productOptions}
+                selectedVariant={selectedVariant}
+              />
+            </div>
+
+            <div className="h-px w-full bg-gradient-to-r from-transparent via-gray-300 to-transparent my-4"></div>
+
+            {/* Product Description */}
+            <Tabs defaultValue="description" className="w-full">
+              <TabsList className="w-full bg-gradient-to-r from-teal-400 via-purple-500 to-orange-500">
+                <TabsTrigger value="description" className="flex-1 data-[state=active]:bg-purple-500">Opis</TabsTrigger>
+                <TabsTrigger value="details" className="flex-1 data-[state=active]:bg-purple-500">Detajli</TabsTrigger>
+                <TabsTrigger value="shipping" className="flex-1 data-[state=active]:bg-purple-500">Dostava</TabsTrigger>
+              </TabsList>
+              <TabsContent value="description" className="mt-6 prose prose-slate max-w-none">
+                <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
+              </TabsContent>
+              <TabsContent value="details" className="mt-6">
+                <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                  <h3 className="font-bold mb-2">Detajli izdelka</h3>
+                  <ul className="space-y-2">
+                    <li className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                      <span>100% urbani stil</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                      <span>Trajnostni materiali</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                      <span>Etično izdelano</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                      <span>Primerno za vse velikosti</span>
+                    </li>
+                  </ul>
+                </div>
+              </TabsContent>
+              <TabsContent value="shipping" className="mt-6">
+                <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                  <h3 className="font-bold mb-2">Brezplačna dostava</h3>
+                  <p className="text-slate-600 mb-2">Naročila nad 50€ so deležna brezplačne dostave.</p>
+                  <p className="text-slate-600">Vsi izdelki so odpremljeni v 24 urah.</p>
+                  <p className="text-slate-600 mt-2 italic">Hitra in trajnostna dostava - ker tvoj stil ne čaka!</p>
+                </div>
+              </TabsContent>
+            </Tabs>
+          </CardContent>
+        </Card>
       </div>
+
       <Analytics.ProductView
         data={{
           products: [

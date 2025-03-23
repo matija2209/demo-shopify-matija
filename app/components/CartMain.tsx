@@ -40,14 +40,7 @@ export function CartMain({ layout, cart: originalCart }: CartMainProps) {
 
   return (
     <Card className={`w-full ${layout === 'page' ? 'max-w-4xl mx-auto' : ''}`}>
-      <CardHeader>
-        <CardTitle>Your Cart</CardTitle>
-        <CardDescription>
-          {cartHasItems
-            ? `${cart?.totalQuantity} item${cart?.totalQuantity !== 1 ? 's' : ''} in your cart`
-            : 'Your cart is empty'}
-        </CardDescription>
-      </CardHeader>
+
 
       <CardContent className="p-0">
         <CartEmpty hidden={linesCount} layout={layout} />
@@ -76,7 +69,7 @@ export function CartMain({ layout, cart: originalCart }: CartMainProps) {
       {(layout === 'page' && cartHasItems) && (
         <CardFooter className="flex justify-between pt-4">
           <Button variant="outline" asChild>
-            <Link to="/collections">Continue Shopping</Link>
+            <Link to="/collections">Nadaljuj z nakupom</Link>
           </Button>
         </CardFooter>
       )}
@@ -97,13 +90,13 @@ function CartEmpty({
 
   return (
     <div className="flex flex-col items-center justify-center py-12 px-6 text-center">
-      <h3 className="text-xl font-medium mb-4">Your cart is empty</h3>
+      <h3 className="text-xl font-medium mb-4">Tvoja košarica je prazna</h3>
       <p className="text-muted-foreground mb-6">
-        Looks like you haven&rsquo;t added anything yet, let&rsquo;s get you started!
+        Izgleda, da nisi dodal ničesar še, da bi se začel!
       </p>
       <Button asChild>
         <Link to="/collections" onClick={close} prefetch="viewport">
-          Continue shopping
+          Nadaljuj z nakupom
         </Link>
       </Button>
     </div>
