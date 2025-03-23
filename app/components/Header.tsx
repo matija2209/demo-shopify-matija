@@ -29,15 +29,13 @@ export function Header({
   return (
     <header className="h-32">
       <div className='px-4 max-w-7xl mx-auto h-18 grid grid-cols-3 w-full items-center'>
-        {/* Empty column */}
         <div></div>
 
-        {/* Centered logo column */}
+
         <NavLink className='text-center' prefetch="intent" to="/" style={activeLinkStyle} end>
           <strong>{shop.name}</strong>
         </NavLink>
 
-        {/* Right side user login toolbar column */}
         <div className='flex justify-end'>
           <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
         </div>

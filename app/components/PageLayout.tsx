@@ -15,6 +15,10 @@ import {
 } from '~/components/SearchFormPredictive';
 import { SearchResultsPredictive } from '~/components/SearchResultsPredictive';
 import { ArrowRight, Loader2, Search, X } from 'lucide-react';
+import { CardContent } from './ui/card';
+import { Separator } from './ui/separator';
+import { Card } from './ui/card';
+import { Button } from './ui/button';
 
 interface PageLayoutProps {
   cart: Promise<CartApiQueryFragment | null>;
@@ -207,7 +211,6 @@ function SearchAside() {
     </Aside>
   );
 }
-
 function MobileMenuAside({
   header,
   publicStoreDomain,

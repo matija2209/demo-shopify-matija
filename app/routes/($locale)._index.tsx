@@ -6,6 +6,7 @@ import type {
   FeaturedCollectionFragment,
   RecommendedProductsQuery,
 } from 'storefrontapi.generated';
+import { Button } from '~/components/ui/button';
 
 export const meta: MetaFunction = () => {
   return [{ title: 'Trgovina Matija | Home' }];
@@ -84,6 +85,8 @@ function FeaturedCollection({
               <h1>Best in life</h1>
               <p>From bright and fruity to rich and chocolatey, March’s new coffees celebrate the craft and dedication of their producers.</p>
             </div>
+            <Button>Click me</Button>
+
             <button>
               But no
             </button>

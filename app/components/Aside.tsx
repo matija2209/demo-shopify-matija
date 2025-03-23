@@ -1,12 +1,9 @@
-import {
-  createContext,
-  type ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import React, { createContext, type ReactNode, useContext, useState } from 'react';
+import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle } from './ui/sheet';
+
 
 type AsideType = 'search' | 'cart' | 'mobile' | 'closed';
+
 type AsideContextValue = {
   type: AsideType;
   open: (mode: AsideType) => void;
@@ -14,7 +11,7 @@ type AsideContextValue = {
 };
 
 /**
- * A side bar component with Overlay
+ * A side bar component using shadcn/ui Sheet
  * @example
  * ```jsx
  * <Aside type="search" heading="SEARCH">
@@ -32,49 +29,40 @@ export function Aside({
   type: AsideType;
   heading: React.ReactNode;
 }) {
-  const {type: activeType, close} = useAside();
-  const expanded = type === activeType;
+  const { type: activeType, close } = useAside();
+  const isOpen = type === activeType && activeType !== 'closed';
 
-  useEffect(() => {
-    const abortController = new AbortController();
-
-    if (expanded) {
-      document.addEventListener(
-        'keydown',
-        function handler(event: KeyboardEvent) {
-          if (event.key === 'Escape') {
-            close();
-          }
-        },
-        {signal: abortController.signal},
-      );
+  // Determine side based on type
+  const getSide = () => {
+    switch (type) {
+      case 'cart':
+        return 'right';
+      case 'mobile':
+        return 'left';
+      case 'search':
+      default:
+        return 'right';
     }
-    return () => abortController.abort();
-  }, [close, expanded]);
+  };
 
   return (
-    <div
-      aria-modal
-      className={`overlay ${expanded ? 'expanded' : ''}`}
-      role="dialog"
-    >
-      <button className="close-outside" onClick={close} />
-      <aside>
-        <header>
-          <h3>{heading}</h3>
-          <button className="close reset" onClick={close} aria-label="Close">
-            &times;
-          </button>
-        </header>
-        <main>{children}</main>
-      </aside>
-    </div>
+    <Sheet open={isOpen} onOpenChange={(open) => !open && close()}>
+      <SheetContent side={getSide()} className="overflow-y-auto">
+        <SheetHeader className="mb-4">
+          <SheetTitle>{heading}</SheetTitle>
+          <SheetClose className="absolute top-4 right-4" />
+        </SheetHeader>
+        <div className="px-1">
+          {children}
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 }
 
 const AsideContext = createContext<AsideContextValue | null>(null);
 
-Aside.Provider = function AsideProvider({children}: {children: ReactNode}) {
+Aside.Provider = function AsideProvider({ children }: { children: ReactNode }) {
   const [type, setType] = useState<AsideType>('closed');
 
   return (
