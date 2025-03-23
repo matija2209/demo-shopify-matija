@@ -9,13 +9,18 @@ import {
   useSelectedOptionInUrlParam,
 } from '@shopify/hydrogen';
 import { ProductPrice } from '~/components/ProductPrice';
-import { ProductImage } from '~/components/ProductImage';
+import { ProductImageGallery } from '~/components/ProductImageGallery';
 import { ProductForm } from '~/components/ProductForm';
 import { Card, CardContent } from '~/components/ui/card';
 import { Badge } from '~/components/ui/badge';
 import { Separator } from '~/components/ui/separator';
 import { twMerge } from 'tailwind-merge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs';
+import { ProductFAQ } from '~/components/ProductFAQ';
+import { FeaturedTestimonials } from '~/components/FeaturedTestimonials';
+import { Testimonials } from '~/components/Testimonials';
+import { ProductFeatures } from '~/components/ProductFeatures';
+import QuestionsAndAnswers, { QAPosts } from '~/components/QaSection';
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [
@@ -81,8 +86,6 @@ function loadDeferredData({ context, params }: LoaderFunctionArgs) {
   return {};
 }
 
-
-
 export default function Product() {
   const { product } = useLoaderData<typeof loader>();
 
@@ -102,24 +105,38 @@ export default function Product() {
     selectedOrFirstAvailableVariant: selectedVariant,
   });
 
-  const { title, descriptionHtml, vendor } = product;
+  const { title, descriptionHtml, vendor, metafields, images } = product;
 
   // Check if product is on sale
   const isOnSale = selectedVariant?.compareAtPrice &&
     selectedVariant.compareAtPrice.amount > selectedVariant.price.amount;
 
+  // Find the metafields using a type-safe approach
+  type Metafield = { key: string; value: string };
+
+  const getMetafield = (key: string): Metafield | undefined => {
+    return metafields.find((field: any) => field?.key === key) as Metafield | undefined;
+  };
+
+  const faqMetafield = getMetafield('faq');
+  const qaMetafield = getMetafield('q_a');
+  const productFeaturesMetafield = getMetafield('product_features');
+  const testimonialsMetafield = getMetafield('testimonials');
+
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 md:py-12 relative">
+    <div className="py-12">
       {/* Background elements */}
       <div className="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-teal-400 via-purple-500 to-orange-500"></div>
       <div className="absolute -top-12 -left-12 w-32 h-32 rounded-full bg-purple-500/10 blur-xl"></div>
       <div className="absolute -bottom-8 right-8 w-40 h-40 rounded-full bg-teal-400/10 blur-xl"></div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16 relative z-10">
+      <div className="px-4 grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-16 relative z-10">
         {/* Product Image Column */}
         <div className="rounded-xl overflow-hidden bg-white border-2 border-purple-300 shadow-lg relative">
-          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-teal-400 via-purple-500 to-orange-500 z-10"></div>
-          <ProductImage image={selectedVariant?.image} />
+          <ProductImageGallery
+            images={images.nodes as any}
+            selectedVariantImage={selectedVariant?.image as any}
+          />
           {isOnSale && (
             <div className="absolute top-4 left-4 bg-gradient-to-r from-red-500 to-orange-500 text-white font-bold py-1 px-3 rounded-full transform rotate-[-2deg] shadow-md">
               SALE
@@ -163,7 +180,7 @@ export default function Product() {
                 <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
               </TabsContent>
               <TabsContent value="details" className="mt-6">
-                <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                <div className="bg-purple-50 p-4 ">
                   <h3 className="font-bold mb-2">Detajli izdelka</h3>
                   <ul className="space-y-2">
                     <li className="flex items-center gap-2">
@@ -186,7 +203,7 @@ export default function Product() {
                 </div>
               </TabsContent>
               <TabsContent value="shipping" className="mt-6">
-                <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                <div className="bg-purple-50 p-4">
                   <h3 className="font-bold mb-2">Brezplačna dostava</h3>
                   <p className="text-slate-600 mb-2">Naročila nad 50€ so deležna brezplačne dostave.</p>
                   <p className="text-slate-600">Vsi izdelki so odpremljeni v 24 urah.</p>
@@ -198,6 +215,18 @@ export default function Product() {
         </Card>
       </div>
 
+      {/* Product Features */}
+      {productFeaturesMetafield && <ProductFeatures features={productFeaturesMetafield} />}
+
+      {/* Featured Testimonials */}
+      {testimonialsMetafield && <FeaturedTestimonials testimonials={testimonialsMetafield} />}
+
+      {/* Add FAQ section */}
+      {/* <ProductFAQ faqMetafield={faqMetafield} /> */}
+
+      {/* All Testimonials */}
+      {testimonialsMetafield && <Testimonials testimonials={testimonialsMetafield} />}
+      {qaMetafield && <QuestionsAndAnswers questions={JSON.parse(qaMetafield.value) as QAPosts} />}
       <Analytics.ProductView
         data={{
           products: [
@@ -245,6 +274,7 @@ const PRODUCT_VARIANT_FRAGMENT = `#graphql
       name
       value
     }
+
     sku
     title
     unitPrice {
@@ -261,9 +291,29 @@ const PRODUCT_FRAGMENT = `#graphql
     vendor
     handle
     descriptionHtml
+    featuredImage {
+      url
+      altText
+      id
+      width
+      height
+    }
+    images (first: 10){
+      nodes{
+        altText
+        id
+        url
+        width
+        height
+      }
+    }
     description
     encodedVariantExistence
     encodedVariantAvailability
+    metafields(identifiers: [{namespace: "custom", key: "faq"},{namespace: "custom", key: "q_a"},{namespace: "custom", key: "product_features"},{namespace: "custom", key: "testimonials"}]) {
+      key
+      value
+    }
     options {
       name
       optionValues {

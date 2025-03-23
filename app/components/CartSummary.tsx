@@ -25,12 +25,12 @@ export function CartSummary({ cart, layout }: CartSummaryProps) {
   return (
     <Card className={layout === 'page' ? 'h-fit sticky top-4' : 'border-0 shadow-none'}>
       <CardHeader className="pb-3">
-        <CardTitle className="text-lg">Order Summary</CardTitle>
+        <CardTitle className="text-lg">Povzetek naročila</CardTitle>
       </CardHeader>
 
       <CardContent className="pb-4 space-y-4">
         <div className="flex justify-between text-sm">
-          <span className="text-muted-foreground">Subtotal</span>
+          <span className="text-muted-foreground">Skupna cena</span>
           <span className="font-medium">
             {cart.cost?.subtotalAmount?.amount ? (
               <Money data={cart.cost?.subtotalAmount} />
@@ -59,7 +59,7 @@ function CartCheckoutActions({ checkoutUrl }: { checkoutUrl?: string }) {
   return (
     <Button className="w-full" size="lg" asChild>
       <a href={checkoutUrl} target="_self">
-        Proceed to Checkout
+        Nadaljuj na plačilo
       </a>
     </Button>
   );
@@ -80,7 +80,7 @@ function CartDiscounts({
       {/* Have existing discount, display it with a remove option */}
       {codes.length > 0 && (
         <div className="flex justify-between text-sm">
-          <span className="text-muted-foreground">Discount(s)</span>
+          <span className="text-muted-foreground">Popusti</span>
           <UpdateDiscountForm>
             <div className="flex items-center">
               <code className="bg-muted px-1 py-0.5 rounded text-xs">{codes?.join(', ')}</code>
@@ -98,11 +98,11 @@ function CartDiscounts({
           <Input
             type="text"
             name="discountCode"
-            placeholder="Discount code"
+            placeholder="Koda za popust"
             className="h-9 text-sm"
           />
           <Button type="submit" variant="outline" size="sm">
-            Apply
+            Potrdi
           </Button>
         </div>
       </UpdateDiscountForm>
@@ -153,7 +153,7 @@ function CartGiftCard({
       {/* Have existing gift card applied, display it with a remove option */}
       {codes.length > 0 && (
         <div className="flex justify-between text-sm">
-          <span className="text-muted-foreground">Gift Card(s)</span>
+          <span className="text-muted-foreground">Darilni boni</span>
           <UpdateGiftCardForm>
             <div className="flex items-center">
               <code className="bg-muted px-1 py-0.5 rounded text-xs">{codes?.join(', ')}</code>
@@ -175,12 +175,12 @@ function CartGiftCard({
           <Input
             type="text"
             name="giftCardCode"
-            placeholder="Gift card code"
+            placeholder="Koda darilnega bona"
             className="h-9 text-sm"
             ref={giftCardCodeInput}
           />
           <Button type="submit" variant="outline" size="sm">
-            Apply
+            Potrdi
           </Button>
         </div>
       </UpdateGiftCardForm>

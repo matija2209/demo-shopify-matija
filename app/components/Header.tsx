@@ -33,6 +33,7 @@ export function Header({
         <div className='block md:hidden'>
           <HeaderMenuMobileToggle />
         </div>
+        <div className='hidden md:block'></div>
 
 
         <NavLink className='text-center' prefetch="intent" to="/" style={activeLinkStyle} end>
@@ -86,7 +87,7 @@ export function HeaderMenu({
               return (
                 <li key={item.id} className="list-none">
                   <NavLink
-                    className="font-black uppercase hover:text-white hover:scale-105 hover:-translate-y-1 transform transition-all duration-300 py-1 relative group inline-block"
+                    className="text-nowrap font-black uppercase hover:text-white hover:scale-105 hover:-translate-y-1 transform transition-all duration-300 py-1 relative group inline-block"
                     end
                     onClick={close}
                     prefetch="intent"
@@ -108,7 +109,7 @@ export function HeaderMenu({
 
   // Mobile Navigation - Vertical list
   return (
-    <nav className={twMerge("bg-gradient-to-r from-teal-400 via-purple-500 to-orange-500 text-white shadow-lg md:hidden")} role="navigation">
+    <nav className={twMerge("md:hidden")} role="navigation">
       <div className="p-4">
         {/* Mobile Header Bar */}
 

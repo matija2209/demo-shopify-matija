@@ -47,6 +47,7 @@ function loadDeferredData({ context }: LoaderFunctionArgs) {
 
 export default function Collections() {
   const { collections } = useLoaderData<typeof loader>();
+  console.log(collections);
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-12">

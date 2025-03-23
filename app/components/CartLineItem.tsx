@@ -13,6 +13,15 @@ import {
 } from '~/components/ui/card';
 import { Badge } from '~/components/ui/badge';
 import { Minus, Plus, Trash2 } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '~/components/ui/dialog';
 
 type CartLine = OptimisticCartLine<CartApiQueryFragment>;
 
@@ -109,7 +118,7 @@ function CartLineQuantity({ line }: { line: CartLine }) {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-sm text-muted-foreground mr-2">Qty: {quantity}</span>
+      <span className="text-sm text-muted-foreground mr-2">Količina: {quantity}</span>
 
       <div className="flex items-center">
         <CartLineUpdateButton lines={[{ id: lineId, quantity: prevQuantity }]}>
@@ -159,22 +168,41 @@ function CartLineRemoveButton({
   disabled: boolean;
 }) {
   return (
-    <CartForm
-      route="/cart"
-      action={CartForm.ACTIONS.LinesRemove}
-      inputs={{ lineIds }}
-    >
-      <Button
-        size="icon"
-        variant="ghost"
-        className="h-8 w-8 ml-1 text-muted-foreground hover:text-destructive"
-        disabled={disabled}
-        type="submit"
-        aria-label="Remove item"
-      >
-        <Trash2 className="h-4 w-4" />
-      </Button>
-    </CartForm>
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button
+          size="icon"
+          variant="ghost"
+          className="h-8 w-8 ml-1 text-muted-foreground hover:text-destructive"
+          disabled={disabled}
+          aria-label="Remove item"
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Remove Item</DialogTitle>
+          <DialogDescription>
+            Are you sure you want to remove this item from your cart?
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <DialogTrigger asChild>
+            <Button variant="outline">Cancel</Button>
+          </DialogTrigger>
+          <CartForm
+            route="/cart"
+            action={CartForm.ACTIONS.LinesRemove}
+            inputs={{ lineIds }}
+          >
+            <Button type="submit" variant="destructive">
+              Remove
+            </Button>
+          </CartForm>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
 
