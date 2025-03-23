@@ -1,12 +1,14 @@
-import {Suspense} from 'react';
-import {Await, NavLink, useAsyncValue} from '@remix-run/react';
+import { Suspense } from 'react';
+import { Await, NavLink, useAsyncValue } from '@remix-run/react';
 import {
   type CartViewPayload,
   useAnalytics,
   useOptimisticCart,
 } from '@shopify/hydrogen';
-import type {HeaderQuery, CartApiQueryFragment} from 'storefrontapi.generated';
-import {useAside} from '~/components/Aside';
+import type { HeaderQuery, CartApiQueryFragment } from 'storefrontapi.generated';
+import { useAside } from '~/components/Aside';
+import { twMerge } from 'tailwind-merge';
+import { ShoppingCart } from 'lucide-react';
 
 interface HeaderProps {
   header: HeaderQuery;
@@ -23,19 +25,29 @@ export function Header({
   cart,
   publicStoreDomain,
 }: HeaderProps) {
-  const {shop, menu} = header;
+  const { shop, menu } = header;
   return (
-    <header className="header">
-      <NavLink prefetch="intent" to="/" style={activeLinkStyle} end>
-        <strong>{shop.name}</strong>
-      </NavLink>
+    <header className="h-32">
+      <div className='px-4 max-w-7xl mx-auto h-18 grid grid-cols-3 w-full items-center'>
+        {/* Empty column */}
+        <div></div>
+
+        {/* Centered logo column */}
+        <NavLink className='text-center' prefetch="intent" to="/" style={activeLinkStyle} end>
+          <strong>{shop.name}</strong>
+        </NavLink>
+
+        {/* Right side user login toolbar column */}
+        <div className='flex justify-end'>
+          <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
+        </div>
+      </div>
       <HeaderMenu
         menu={menu}
         viewport="desktop"
         primaryDomainUrl={header.shop.primaryDomain.url}
         publicStoreDomain={publicStoreDomain}
       />
-      <HeaderCtas isLoggedIn={isLoggedIn} cart={cart} />
     </header>
   );
 }
@@ -51,46 +63,49 @@ export function HeaderMenu({
   viewport: Viewport;
   publicStoreDomain: HeaderProps['publicStoreDomain'];
 }) {
-  const className = `header-menu-${viewport}`;
-  const {close} = useAside();
+  // const className = `header-menu-${viewport}`;
+  const { close } = useAside();
 
   return (
-    <nav className={className} role="navigation">
-      {viewport === 'mobile' && (
-        <NavLink
-          end
-          onClick={close}
-          prefetch="intent"
-          style={activeLinkStyle}
-          to="/"
-        >
-          Home
-        </NavLink>
-      )}
-      {(menu || FALLBACK_HEADER_MENU).items.map((item) => {
-        if (!item.url) return null;
-
-        // if the url is internal, we strip the domain
-        const url =
-          item.url.includes('myshopify.com') ||
-          item.url.includes(publicStoreDomain) ||
-          item.url.includes(primaryDomainUrl)
-            ? new URL(item.url).pathname
-            : item.url;
-        return (
+    <nav className={twMerge("h-16  bg-gray-100 text-white flex items-center")} role="navigation">
+      <div className='max-w-4xl mx-auto w-full flex items-center gap-4 uppercase'>
+        {viewport === 'mobile' && (
           <NavLink
-            className="header-menu-item"
             end
-            key={item.id}
             onClick={close}
+            className={"flex-grow"}
             prefetch="intent"
             style={activeLinkStyle}
-            to={url}
+            to="/"
           >
-            {item.title}
+            Home
           </NavLink>
-        );
-      })}
+        )}
+        {(menu || FALLBACK_HEADER_MENU).items.map((item) => {
+          if (!item.url) return null;
+
+          // if the url is internal, we strip the domain
+          const url =
+            item.url.includes('myshopify.com') ||
+              item.url.includes(publicStoreDomain) ||
+              item.url.includes(primaryDomainUrl)
+              ? new URL(item.url).pathname
+              : item.url;
+          return (
+            <NavLink
+              className="flex-grow"
+              end
+              key={item.id}
+              onClick={close}
+              prefetch="intent"
+              to={url}
+            >
+              {item.title}
+            </NavLink>
+          );
+        })}
+
+      </div>
     </nav>
   );
 }
@@ -116,7 +131,7 @@ function HeaderCtas({
 }
 
 function HeaderMenuMobileToggle() {
-  const {open} = useAside();
+  const { open } = useAside();
   return (
     <button
       className="header-menu-mobile-toggle reset"
@@ -128,7 +143,7 @@ function HeaderMenuMobileToggle() {
 }
 
 function SearchToggle() {
-  const {open} = useAside();
+  const { open } = useAside();
   return (
     <button className="reset" onClick={() => open('search')}>
       Search
@@ -136,13 +151,14 @@ function SearchToggle() {
   );
 }
 
-function CartBadge({count}: {count: number | null}) {
-  const {open} = useAside();
-  const {publish, shop, cart, prevCart} = useAnalytics();
+function CartBadge({ count }: { count: number | null }) {
+  const { open } = useAside();
+  const { publish, shop, cart, prevCart } = useAnalytics();
 
   return (
     <a
       href="/cart"
+      className="relative flex items-center gap-2 p-2 text-gray-700 hover:text-gray-900 transition-colors"
       onClick={(e) => {
         e.preventDefault();
         open('cart');
@@ -151,15 +167,20 @@ function CartBadge({count}: {count: number | null}) {
           prevCart,
           shop,
           url: window.location.href || '',
-        } as CartViewPayload);
+        });
       }}
     >
-      Cart {count === null ? <span>&nbsp;</span> : count}
+      <ShoppingCart size={20} />
+      <span className="font-medium">Košarica</span>
+      {count !== null && count > 0 && (
+        <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+          {count > 99 ? '99+' : count}
+        </span>
+      )}
     </a>
   );
 }
-
-function CartToggle({cart}: Pick<HeaderProps, 'cart'>) {
+function CartToggle({ cart }: Pick<HeaderProps, 'cart'>) {
   return (
     <Suspense fallback={<CartBadge count={null} />}>
       <Await resolve={cart}>
