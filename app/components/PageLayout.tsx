@@ -6,7 +6,6 @@ import type {
   HeaderQuery,
 } from 'storefrontapi.generated';
 import { Aside } from '~/components/Aside';
-import { Footer } from '~/components/Footer';
 import { Header, HeaderMenu } from '~/components/Header';
 import { CartMain } from '~/components/CartMain';
 import {
@@ -55,12 +54,17 @@ export function PageLayout({
         />
       )}
       <main>{children}</main>
-      <FooterCustom></FooterCustom>
-      <Footer
-        footer={footer}
-        header={header}
-        publicStoreDomain={publicStoreDomain}
-      />
+      <Suspense fallback={<p>Nalagam ...</p>}>
+        <Await resolve={footer}>
+          {(footer) => {
+            return <FooterCustom
+              footer={footer}
+              header={header}
+              publicStoreDomain={publicStoreDomain}
+            />
+          }}
+        </Await>
+      </Suspense>
     </Aside.Provider>
   );
 }
@@ -140,7 +144,7 @@ function SearchAside() {
 
                 {products && products.length > 0 && (
                   <div className="space-y-3">
-                    <h3 className="font-semibold text-sm uppercase text-gray-500 border-b border-gray-200 pb-2">Products</h3>
+                    <h3 className="font-semibold text-sm uppercase text-gray-500 border-b border-gray-200 pb-2">Produkti</h3>
                     <div className="grid gap-4">
                       <SearchResultsPredictive.Products
                         products={products}
@@ -153,7 +157,7 @@ function SearchAside() {
 
                 {collections && collections.length > 0 && (
                   <div className="space-y-3">
-                    <h3 className="font-semibold text-sm uppercase text-gray-500 border-b border-gray-200 pb-2">Collections</h3>
+                    <h3 className="font-semibold text-sm uppercase text-gray-500 border-b border-gray-200 pb-2">Kolekcije</h3>
                     <div className="grid gap-2">
                       <SearchResultsPredictive.Collections
                         collections={collections}
@@ -166,7 +170,7 @@ function SearchAside() {
 
                 {pages && pages.length > 0 && (
                   <div className="space-y-3">
-                    <h3 className="font-semibold text-sm uppercase text-gray-500 border-b border-gray-200 pb-2">Pages</h3>
+                    <h3 className="font-semibold text-sm uppercase text-gray-500 border-b border-gray-200 pb-2">Strani</h3>
                     <div className="grid gap-2">
                       <SearchResultsPredictive.Pages
                         pages={pages}
@@ -179,7 +183,7 @@ function SearchAside() {
 
                 {articles && articles.length > 0 && (
                   <div className="space-y-3">
-                    <h3 className="font-semibold text-sm uppercase text-gray-500 border-b border-gray-200 pb-2">Articles</h3>
+                    <h3 className="font-semibold text-sm uppercase text-gray-500 border-b border-gray-200 pb-2">Članki</h3>
                     <div className="grid gap-2">
                       <SearchResultsPredictive.Articles
                         articles={articles}

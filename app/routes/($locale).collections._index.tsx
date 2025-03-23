@@ -6,6 +6,7 @@ import { PaginatedResourceSection } from '~/components/PaginatedResourceSection'
 import { Card, CardContent, CardFooter } from '~/components/ui/card';
 import { Button } from '~/components/ui/button';
 import { ArrowRight } from 'lucide-react';
+import { Separator } from '~/components/ui/separator';
 
 export async function loader(args: LoaderFunctionArgs) {
   // Start fetching non-critical data without blocking time to first byte
@@ -51,10 +52,11 @@ export default function Collections() {
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-12">
-      <div className="mb-12">
-        <h1 className="text-4xl md:text-6xl font-bold mb-6 text-navy-900">Collections</h1>
-      </div>
-
+      <header className="mb-12">
+        <h1 className="text-4xl md:text-6xl font-bold mb-6 text-navy-900"> Kolekcije</h1>
+        <p className='text-muted-foreground'>Poglej si vse naše kolekcije in najdno tisto, ki ti najbolj odgovarja.</p>
+      </header>
+      <Separator className='my-6 bg-muted'></Separator>
       <PaginatedResourceSection
         connection={collections}
         resourcesClassName="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
@@ -107,7 +109,7 @@ function CollectionItem({
 
         <CardFooter className="pt-0 pb-4 px-4">
           <Button variant="outline" className="w-full border-gray-300 hover:bg-gray-50 gap-2">
-            View Collection <ArrowRight className="h-4 w-4" />
+            Oglej kolekcijo <ArrowRight className="h-4 w-4" />
           </Button>
         </CardFooter>
       </Link>

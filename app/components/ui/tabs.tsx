@@ -61,7 +61,8 @@ function TabsContent({
     <TabsPrimitive.Content
       data-slot="tabs-content"
       className={cn(
-        "outline-none transition-all data-[state=active]:animate-in data-[state=inactive]:animate-out data-[state=inactive]:fade-out-50 data-[state=active]:fade-in-50 duration-200",
+        "outline-none hidden data-[state=active]:block",
+        // Removed the animation classes that were causing stacking
         className
       )}
       {...props}

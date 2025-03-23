@@ -75,7 +75,7 @@ function FeaturedCollection({
   const image = collection?.image;
   return (
     <section className="bg-gray-100">
-      <div className="max-w-7xl mx-auto flex flex-col md:flex-row">
+      <div className="max-w-7xl mx-auto flex flex-col md:flex-row  md:max-h-[60vh]">
         <div className="flex-1 p-12 flex items-center">
           <div className="space-y-6 max-w-md">
             <p className="text-black text-sm font-medium">
@@ -88,9 +88,11 @@ function FeaturedCollection({
               Od uličnih stilov do statement kosov - oblačila, ki govorijo tvoj jezik in izražajo tvojo edinstveno osebnost.
             </p>
             <div>
-              <Button size={"lg"} >
-                ODKRI ZDAJ
-              </Button>
+              <Link to="/collections">
+                <Button size={"lg"} >
+                  ODKRI ZDAJ
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

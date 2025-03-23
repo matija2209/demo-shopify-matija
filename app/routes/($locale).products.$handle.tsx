@@ -8,15 +8,11 @@ import {
   getAdjacentAndFirstAvailableVariants,
   useSelectedOptionInUrlParam,
 } from '@shopify/hydrogen';
-import { ProductPrice } from '~/components/ProductPrice';
 import { ProductImageGallery } from '~/components/ProductImageGallery';
 import { ProductForm } from '~/components/ProductForm';
 import { Card, CardContent } from '~/components/ui/card';
 import { Badge } from '~/components/ui/badge';
-import { Separator } from '~/components/ui/separator';
-import { twMerge } from 'tailwind-merge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '~/components/ui/tabs';
-import { ProductFAQ } from '~/components/ProductFAQ';
 import { FeaturedTestimonials } from '~/components/FeaturedTestimonials';
 import { Testimonials } from '~/components/Testimonials';
 import { ProductFeatures } from '~/components/ProductFeatures';
@@ -169,47 +165,53 @@ export default function Product() {
 
             <div className="h-px w-full bg-gradient-to-r from-transparent via-gray-300 to-transparent my-4"></div>
 
-            {/* Product Description */}
+            {/* Product Description - Fixed Tabs */}
             <Tabs defaultValue="description" className="w-full">
-              <TabsList className="w-full bg-gradient-to-r from-teal-400 via-purple-500 to-orange-500">
-                <TabsTrigger value="description" className="flex-1 data-[state=active]:bg-purple-500">Opis</TabsTrigger>
-                <TabsTrigger value="details" className="flex-1 data-[state=active]:bg-purple-500">Detajli</TabsTrigger>
-                <TabsTrigger value="shipping" className="flex-1 data-[state=active]:bg-purple-500">Dostava</TabsTrigger>
+              <TabsList className="w-full flex gap-4 p-2">
+                <TabsTrigger className='flex-1' value="description">Opis</TabsTrigger>
+                <TabsTrigger className='flex-1' value="details">Detajli</TabsTrigger>
+                <TabsTrigger className='flex-1' value="shipping">Dostava</TabsTrigger>
               </TabsList>
-              <TabsContent value="description" className="mt-6 prose prose-slate max-w-none">
-                <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
-              </TabsContent>
-              <TabsContent value="details" className="mt-6">
-                <div className="bg-purple-50 p-4 ">
-                  <h3 className="font-bold mb-2">Detajli izdelka</h3>
-                  <ul className="space-y-2">
-                    <li className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                      <span>100% urbani stil</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                      <span>Trajnostni materiali</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                      <span>Etično izdelano</span>
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                      <span>Primerno za vse velikosti</span>
-                    </li>
-                  </ul>
-                </div>
-              </TabsContent>
-              <TabsContent value="shipping" className="mt-6">
-                <div className="bg-purple-50 p-4">
-                  <h3 className="font-bold mb-2">Brezplačna dostava</h3>
-                  <p className="text-slate-600 mb-2">Naročila nad 50€ so deležna brezplačne dostave.</p>
-                  <p className="text-slate-600">Vsi izdelki so odpremljeni v 24 urah.</p>
-                  <p className="text-slate-600 mt-2 italic">Hitra in trajnostna dostava - ker tvoj stil ne čaka!</p>
-                </div>
-              </TabsContent>
+
+              {/* With fixed height to prevent layout shifts */}
+              <div className="min-h-[200px]">
+                <TabsContent value="description" className="mt-6 prose prose-slate max-w-none">
+                  <div dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
+                </TabsContent>
+
+                <TabsContent value="details" className="mt-6">
+                  <div className="bg-purple-50 p-4">
+                    <h3 className="font-bold mb-2">Detajli izdelka</h3>
+                    <ul className="space-y-2">
+                      <li className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <span>100% urbani stil</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <span>Trajnostni materiali</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <span>Etično izdelano</span>
+                      </li>
+                      <li className="flex items-center gap-2">
+                        <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                        <span>Primerno za vse velikosti</span>
+                      </li>
+                    </ul>
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="shipping" className="mt-6">
+                  <div className="bg-purple-50 p-4">
+                    <h3 className="font-bold mb-2">Brezplačna dostava</h3>
+                    <p className="text-slate-600 mb-2">Naročila nad 50€ so deležna brezplačne dostave.</p>
+                    <p className="text-slate-600">Vsi izdelki so odpremljeni v 24 urah.</p>
+                    <p className="text-slate-600 mt-2 italic">Hitra in trajnostna dostava - ker tvoj stil ne čaka!</p>
+                  </div>
+                </TabsContent>
+              </div>
             </Tabs>
           </CardContent>
         </Card>

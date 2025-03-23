@@ -156,9 +156,8 @@ function CartLineQuantity({ line }: { line: CartLine }) {
 }
 
 /**
- * A button that removes a line item from the cart. It is disabled
- * when the line item is new, and the server hasn't yet responded
- * that it was successfully added to the cart.
+ * Gumb, ki odstrani artikel iz košarice. Onemogočen je,
+ * ko je artikel nov in strežnik še ni potrdil njegove uspešne dodaje v košarico.
  */
 function CartLineRemoveButton({
   lineIds,
@@ -175,21 +174,21 @@ function CartLineRemoveButton({
           variant="ghost"
           className="h-8 w-8 ml-1 text-muted-foreground hover:text-destructive"
           disabled={disabled}
-          aria-label="Remove item"
+          aria-label="Odstrani artikel"
         >
           <Trash2 className="h-4 w-4" />
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Remove Item</DialogTitle>
+          <DialogTitle>Odstranitev artikla</DialogTitle>
           <DialogDescription>
-            Are you sure you want to remove this item from your cart?
+            Ali ste prepričani, da želite odstraniti ta artikel iz košarice?
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <DialogTrigger asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button variant="outline">Prekliči</Button>
           </DialogTrigger>
           <CartForm
             route="/cart"
@@ -197,7 +196,7 @@ function CartLineRemoveButton({
             inputs={{ lineIds }}
           >
             <Button type="submit" variant="destructive">
-              Remove
+              Odstrani
             </Button>
           </CartForm>
         </DialogFooter>

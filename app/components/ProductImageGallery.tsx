@@ -37,12 +37,12 @@ export function ProductImageGallery({
 
     return (
         <div className="relative group">
-            {/* Main Image with Zoom Overlay */}
-            <div className="relative max-h-[600px] rounded-xl">
+            {/* Main Image with Fixed Height Container */}
+            <div className="relative h-[500px] overflow-hidden rounded-xl">
                 <Image
                     src={selectedImage.url}
                     alt={selectedImage.altText || 'Product Image'}
-                    className=""
+                    className="w-full h-full object-contain"
                 />
 
                 {/* Zoom Button */}
@@ -56,7 +56,7 @@ export function ProductImageGallery({
                 </Button>
             </div>
 
-            {/* Image Preview Gallery */}
+            {/* Image Preview Gallery - Fixed Height */}
             <div className="mt-4 grid grid-cols-4 gap-2">
                 {uniqueImages.map((img) => (
                     <button
@@ -78,28 +78,31 @@ export function ProductImageGallery({
                 ))}
             </div>
 
-            {/* Lightbox Dialog */}
+            {/* Improved Lightbox Dialog */}
             <Dialog open={isLightboxOpen} onOpenChange={setIsLightboxOpen}>
                 <DialogContent
-                    className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-0 outline-none border-none"
+                    className="max-w-none max-h-none p-0 border-none bg-transparent"
                 >
-                    <div className="relative max-w-[90vw] max-h-[90vh] flex items-center justify-center">
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90">
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="absolute top-4 right-4 bg-white/20 hover:bg-white/30 z-10 text-white"
+                            className="absolute top-6 right-6 bg-white/20 hover:bg-white/30 z-10 text-white"
                             onClick={() => setIsLightboxOpen(false)}
                         >
                             <X className="h-8 w-8" />
                         </Button>
-                        <img
-                            src={selectedImage.url}
-                            alt={selectedImage.altText || 'Product Image'}
-                            className="max-w-full max-h-full object-contain rounded-lg"
-                        />
+
+                        <div className="w-[90vw] h-[90vh] flex items-center justify-center">
+                            <img
+                                src={selectedImage.url}
+                                alt={selectedImage.altText || 'Product Image'}
+                                className="max-w-full max-h-full object-contain"
+                            />
+                        </div>
                     </div>
                 </DialogContent>
             </Dialog>
         </div>
     );
-} 
+}
