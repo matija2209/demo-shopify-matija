@@ -36,16 +36,14 @@ export function CartMain({ layout, cart: originalCart }: CartMainProps) {
   const withDiscount =
     cart &&
     Boolean(cart?.discountCodes?.filter((code) => code.applicable)?.length);
-  const cartHasItems = cart?.totalQuantity && cart?.totalQuantity > 0;
+  const cartHasItems = Boolean(cart?.totalQuantity) && (cart?.totalQuantity ?? 0) > 0;
 
   return (
-    <Card className={`w-full ${layout === 'page' ? 'max-w-4xl mx-auto' : ''}`}>
-
-
+    <Card noScale className={`w-full ${layout === 'page' ? 'max-w-4xl mx-auto' : ''}`}>
       <CardContent className="p-0">
         <CartEmpty hidden={linesCount} layout={layout} />
 
-        {cartHasItems && (
+        {Boolean(cartHasItems) && (
           <div className={`grid ${layout === 'page' ? 'grid-cols-1 md:grid-cols-3 gap-6' : 'grid-cols-1 gap-4'}`}>
             <ScrollArea className={`${layout === 'page' ? 'md:col-span-2' : ''} max-h-96`}>
               <ul className="divide-y px-6">
@@ -55,7 +53,7 @@ export function CartMain({ layout, cart: originalCart }: CartMainProps) {
               </ul>
             </ScrollArea>
 
-            {cartHasItems && (
+            {Boolean(cartHasItems) && (
               <div className={`${layout === 'page' ? 'md:col-span-1' : ''} px-6 pb-6`}>
                 <CartSummary cart={cart} layout={layout} />
               </div>
@@ -66,11 +64,13 @@ export function CartMain({ layout, cart: originalCart }: CartMainProps) {
 
       {withDiscount && <Separator />}
 
-      {(layout === 'page' && cartHasItems) && (
+      {Boolean(layout === 'page' && cartHasItems) && (
         <CardFooter className="flex justify-between pt-4">
-          <Button variant="outline" asChild>
-            <Link to="/collections">Nadaljuj z nakupom</Link>
-          </Button>
+          <Link to="/collections">
+            <Button variant="outline" >
+              Nadaljuj z nakupom
+            </Button>
+          </Link>
         </CardFooter>
       )}
     </Card>
@@ -94,11 +94,11 @@ function CartEmpty({
       <p className="text-muted-foreground mb-6">
         Izgleda, da nisi dodal ničesar še, da bi se začel!
       </p>
-      <Button asChild>
-        <Link to="/collections" onClick={close} prefetch="viewport">
+      <Link to="/collections" onClick={close} prefetch="viewport">
+        <Button>
           Nadaljuj z nakupom
-        </Link>
-      </Button>
+        </Button>
+      </Link>
     </div>
   );
 }

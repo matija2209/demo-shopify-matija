@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { Await, NavLink, useAsyncValue } from '@remix-run/react';
+import { Await, Link, NavLink, useAsyncValue } from '@remix-run/react';
 import {
   type CartViewPayload,
   useAnalytics,
@@ -202,7 +202,7 @@ function CartBadge({ count }: { count: number | null }) {
   const { publish, shop, cart, prevCart } = useAnalytics();
 
   return (
-    <a href="/cart">
+    <Link to="/cart">
       <Button
         variant={"link"}
 
@@ -227,7 +227,7 @@ function CartBadge({ count }: { count: number | null }) {
         )}
 
       </Button>
-    </a>
+    </Link>
   );
 }
 function CartToggle({ cart }: Pick<HeaderProps, 'cart'>) {

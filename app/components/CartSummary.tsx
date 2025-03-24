@@ -2,7 +2,7 @@ import type { CartApiQueryFragment } from 'storefrontapi.generated';
 import type { CartLayout } from '~/components/CartMain';
 import { CartForm, Money, type OptimisticCart } from '@shopify/hydrogen';
 import { useRef } from 'react';
-import { FetcherWithComponents } from '@remix-run/react';
+import { FetcherWithComponents, Link } from '@remix-run/react';
 import {
   Card,
   CardContent,
@@ -23,7 +23,7 @@ type CartSummaryProps = {
 
 export function CartSummary({ cart, layout }: CartSummaryProps) {
   return (
-    <Card className={layout === 'page' ? 'h-fit sticky top-4' : 'border-0 shadow-none'}>
+    <Card noScale className={layout === 'page' ? 'h-fit sticky top-4' : 'border-0 shadow-none'}>
       <CardHeader className="pb-3">
         <CardTitle className="text-lg">Povzetek naročila</CardTitle>
       </CardHeader>
@@ -57,11 +57,11 @@ function CartCheckoutActions({ checkoutUrl }: { checkoutUrl?: string }) {
   if (!checkoutUrl) return null;
 
   return (
-    <Button className="w-full" size="lg" asChild>
-      <a href={checkoutUrl} target="_self">
+    <Link to={checkoutUrl} target="_self">
+      <Button className="w-full" size="lg">
         Nadaljuj na plačilo
-      </a>
-    </Button>
+      </Button>
+    </Link>
   );
 }
 
@@ -154,7 +154,7 @@ function CartGiftCard({
       {codes.length > 0 && (
         <div className="flex justify-between text-sm">
           <span className="text-muted-foreground">Darilni boni</span>
-          <UpdateGiftCardForm>
+          <UpdateGiftCardForm giftCardCodes={[]}>
             <div className="flex items-center">
               <code className="bg-muted px-1 py-0.5 rounded text-xs">{codes?.join(', ')}</code>
               <Button variant="ghost" size="icon" className="h-6 w-6 ml-1">
