@@ -229,7 +229,7 @@ export default function Product() {
           {testimonialsMetafield && <FeaturedTestimonials testimonials={testimonialsMetafield} />}
         </div>
       </div>
-      <div className='max-w-7xl mx-auto space-y-36'>
+      <div className='max-w-7xl mx-auto space-y-36 px-4'>
         {/* Featured Testimonials */}
 
         {/* Add FAQ section */}

@@ -1,3 +1,4 @@
+import { Link } from '@remix-run/react';
 import React from 'react';
 import { Button } from '~/components/ui/button';
 
@@ -34,11 +35,13 @@ const VideoSection = () => {
                     </p>
 
                     {/* CTA Button */}
-                    <Button
-                        className="bg-primary hover:bg-primary/80 text-white px-12 py-6 text-lg uppercase font-medium"
-                    >
-                        Nakupuj zdaj
-                    </Button>
+                    <Link to="/collections">
+                        <Button
+                            className="bg-primary hover:bg-primary/80 text-white px-12 py-6 text-lg uppercase font-medium"
+                        >
+                            Nakupuj zdaj
+                        </Button>
+                    </Link>
                 </div>
             </div>
 
