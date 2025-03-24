@@ -57,8 +57,8 @@ export function ReviewSnapshot({ testimonials, filterByRating }: ReviewSnapshotP
     const roundedAverage = Math.round(averageRating * 10) / 10; // Round to 1 decimal place
 
     return (
-        <div className="my-12 max-w-7xl mx-auto px-4">
-            <h2 className="text-5xl font-light mb-6 tracking-wide">Pregled ocen</h2>
+        <div className="">
+            <h2 className="text-4xl font-light mb-6 tracking-wide">Pregled ocen</h2>
             <div className="border-t border-b py-8">
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
                     {/* Average Rating */}

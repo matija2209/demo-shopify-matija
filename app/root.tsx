@@ -15,6 +15,7 @@ import favicon from '~/assets/favicon.svg';
 import tailwindCss from './styles/tailwind.css?url';
 import { PageLayout } from '~/components/PageLayout';
 import { FOOTER_QUERY, HEADER_QUERY } from '~/lib/fragments';
+import { Toaster } from 'sonner';
 
 export type RootLoader = typeof loader;
 
@@ -165,6 +166,7 @@ export function Layout({ children }: { children?: React.ReactNode }) {
         ) : (
           children
         )}
+        <Toaster></Toaster>
         <ScrollRestoration nonce={nonce} />
         <Scripts nonce={nonce} />
       </body>

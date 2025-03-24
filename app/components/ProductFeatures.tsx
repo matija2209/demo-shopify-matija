@@ -37,14 +37,10 @@ export function ProductFeatures({ features }: ProductFeaturesProps) {
     if (productFeatures.length === 0) return null;
 
     return (
-        <div className="my-12 py-10 bg-muted">
-            <div className="max-w-7xl mx-auto px-4">
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 md:gap-4">
-                    {productFeatures.map((feature, index) => (
-                        <FeatureItem key={index} feature={feature} />
-                    ))}
-                </div>
-            </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 md:gap-4">
+            {productFeatures.map((feature, index) => (
+                <FeatureItem key={index} feature={feature} />
+            ))}
         </div>
     );
 }

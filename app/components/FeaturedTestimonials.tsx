@@ -82,7 +82,7 @@ export function FeaturedTestimonials({ testimonials }: FeaturedTestimonialsProps
     return (
         <div
             ref={sectionRef}
-            className={`bg-purple-50 py-16 px-4 transition-all duration-1000 ${isInView
+            className={`transition-all duration-1000 ${isInView
                 ? 'opacity-100 translate-y-0'
                 : 'opacity-0 translate-y-10'
                 }`}

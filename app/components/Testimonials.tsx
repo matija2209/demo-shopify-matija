@@ -76,97 +76,98 @@ export function Testimonials({ testimonials }: TestimonialsProps) {
     };
 
     return (
-        <div className="my-16 max-w-7xl mx-auto px-4">
+        <div className="space-y-12">
             {/* Review Snapshot Component */}
             <ReviewSnapshot testimonials={testimonials} filterByRating={handleFilterByRating} />
-
-            <div className="text-center mb-12">
-                <h2 className="text-3xl font-bold mb-4">
-                    {filterRating ? `Ocene z ${filterRating} zvezdicami` : "Kaj pravijo naši stranki"}
-                </h2>
-                <p className="text-slate-600 max-w-2xl mx-auto">
-                    {filterRating
-                        ? `Prikazane so samo ocene z ${filterRating} zvezdicami. Najdenih ${filteredTestimonials.length} ocen.`
-                        : 'Resnične ocene od resničnih strank. Ponosni smo, da smo pomagali toliko ljudem najti izdelke, ki jih imajo radi.'
-                    }
-                </p>
-                <div className="w-20 h-1 bg-gradient-to-r from-purple-500 to-orange-500 mx-auto mt-4"></div>
-            </div>
-
-            {filterRating && (
-                <div className="mb-6 text-center">
-                    <button
-                        className="px-4 py-2 bg-purple-100 text-purple-800 rounded-full hover:bg-purple-200 transition-colors"
-                        onClick={() => setFilterRating(null)}
-                    >
-                        Počisti filter
-                    </button>
+            <div>
+                <div className="text-center mb-12">
+                    <h2 className="text-3xl font-bold mb-4">
+                        {filterRating ? `Ocene z ${filterRating} zvezdicami` : "Kaj pravijo naši stranki"}
+                    </h2>
+                    <p className="text-slate-600 max-w-2xl mx-auto">
+                        {filterRating
+                            ? `Prikazane so samo ocene z ${filterRating} zvezdicami. Najdenih ${filteredTestimonials.length} ocen.`
+                            : 'Resnične ocene od resničnih strank. Ponosni smo, da smo pomagali toliko ljudem najti izdelke, ki jih imajo radi.'
+                        }
+                    </p>
+                    <div className="w-20 h-1 bg-gradient-to-r from-purple-500 to-orange-500 mx-auto mt-4"></div>
                 </div>
-            )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                {paginatedTestimonials.map((testimonial, index) => (
-                    <TestimonialCard
-                        key={index}
-                        testimonial={testimonial}
-                        isExpanded={expandedTestimonials.includes(startIndex + index)}
-                        onToggleExpand={() => toggleExpand(startIndex + index)}
-                        textLimit={TEXT_LIMIT}
-                    />
-                ))}
-            </div>
-
-            {/* Pagination Controls */}
-            {totalPages > 1 && (
-                <div className="flex justify-center items-center gap-2 mt-8">
-                    <Button
-                        variant="outline"
-                        disabled={currentPage === 1}
-                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                        className="h-9 w-9 p-0"
-                    >
-                        <span className="sr-only">Prejšnja stran</span>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-4 w-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
+                {filterRating && (
+                    <div className="mb-6 text-center">
+                        <button
+                            className="px-4 py-2 bg-purple-100 text-purple-800 rounded-full hover:bg-purple-200 transition-colors"
+                            onClick={() => setFilterRating(null)}
                         >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                        </svg>
-                    </Button>
+                            Počisti filter
+                        </button>
+                    </div>
+                )}
 
-                    {Array.from({ length: totalPages }).map((_, index) => (
-                        <Button
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                    {paginatedTestimonials.map((testimonial, index) => (
+                        <TestimonialCard
                             key={index}
-                            variant={currentPage === index + 1 ? "default" : "outline"}
-                            onClick={() => setCurrentPage(index + 1)}
-                            className={`h-9 w-9 p-0 ${currentPage === index + 1 ? 'bg-purple-800 hover:bg-purple-700' : ''}`}
-                        >
-                            {index + 1}
-                        </Button>
+                            testimonial={testimonial}
+                            isExpanded={expandedTestimonials.includes(startIndex + index)}
+                            onToggleExpand={() => toggleExpand(startIndex + index)}
+                            textLimit={TEXT_LIMIT}
+                        />
                     ))}
-
-                    <Button
-                        variant="outline"
-                        disabled={currentPage === totalPages}
-                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                        className="h-9 w-9 p-0"
-                    >
-                        <span className="sr-only">Naslednja stran</span>
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-4 w-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                    </Button>
                 </div>
-            )}
+
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                    <div className="flex justify-center items-center gap-2 mt-8">
+                        <Button
+                            variant="outline"
+                            disabled={currentPage === 1}
+                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                            className="h-9 w-9 p-0"
+                        >
+                            <span className="sr-only">Prejšnja stran</span>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-4 w-4"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </Button>
+
+                        {Array.from({ length: totalPages }).map((_, index) => (
+                            <Button
+                                key={index}
+                                variant={currentPage === index + 1 ? "default" : "outline"}
+                                onClick={() => setCurrentPage(index + 1)}
+                                className={`h-9 w-9 p-0 ${currentPage === index + 1 ? 'bg-purple-800 hover:bg-purple-700' : ''}`}
+                            >
+                                {index + 1}
+                            </Button>
+                        ))}
+
+                        <Button
+                            variant="outline"
+                            disabled={currentPage === totalPages}
+                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                            className="h-9 w-9 p-0"
+                        >
+                            <span className="sr-only">Naslednja stran</span>
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-4 w-4"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                        </Button>
+                    </div>
+                )}
+            </div>
         </div>
     );
 }

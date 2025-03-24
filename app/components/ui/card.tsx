@@ -1,11 +1,16 @@
 import * as React from "react"
 import { cn } from "~/lib/utils"
 
-function Card({ className, ...props }: React.ComponentProps<"div">) {
+interface CardProps extends React.ComponentProps<"div"> {
+  noScale?: boolean;
+}
+
+function Card({ className, noScale, ...props }: CardProps) {
   return (
     <div
       className={cn(
-        "relative overflow-hidden rounded-xl bg-white text-card-foreground shadow-lg border-2 border-purple-500 transition-all hover:shadow-xl hover:scale-[1.02]",
+        "relative overflow-hidden rounded-xl bg-white text-card-foreground shadow-lg border-2 border-purple-500 transition-all hover:shadow-xl",
+        !noScale && "hover:scale-[1.02]",
         className
       )}
       {...props}

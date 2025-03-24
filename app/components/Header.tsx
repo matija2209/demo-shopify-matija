@@ -37,7 +37,7 @@ export function Header({
 
 
         <NavLink className='text-center' prefetch="intent" to="/" style={activeLinkStyle} end>
-          <strong className=' text-xl md:text-4xl uppercase font-extrabold'>Trgovina</strong>
+          <strong className=' text-xl md:text-4xl font-semibold font-serif '>Vaš Kotiček Lepote</strong>
         </NavLink>
 
         <div className='flex justify-end'>

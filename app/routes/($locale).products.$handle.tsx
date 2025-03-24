@@ -17,6 +17,8 @@ import { FeaturedTestimonials } from '~/components/FeaturedTestimonials';
 import { Testimonials } from '~/components/Testimonials';
 import { ProductFeatures } from '~/components/ProductFeatures';
 import QuestionsAndAnswers, { QAPosts } from '~/components/QaSection';
+import { ProductFAQ } from '~/components/ProductFAQ';
+import VideoSection from '~/components/video-section';
 
 export const meta: MetaFunction<typeof loader> = ({ data }) => {
   return [
@@ -216,19 +218,29 @@ export default function Product() {
           </CardContent>
         </Card>
       </div>
+      <div className='bg-muted my-24 py-12 px-4'>
+        <div className='max-w-7xl mx-auto'>
+          {productFeaturesMetafield && <ProductFeatures features={productFeaturesMetafield} />}
+        </div>
+      </div>
 
-      {/* Product Features */}
-      {productFeaturesMetafield && <ProductFeatures features={productFeaturesMetafield} />}
+      <div className='bg-purple-50 py-16 px-4 my-24'>
+        <div className='max-w-7xl mx-auto'>
+          {testimonialsMetafield && <FeaturedTestimonials testimonials={testimonialsMetafield} />}
+        </div>
+      </div>
+      <div className='max-w-7xl mx-auto space-y-36'>
+        {/* Featured Testimonials */}
 
-      {/* Featured Testimonials */}
-      {testimonialsMetafield && <FeaturedTestimonials testimonials={testimonialsMetafield} />}
+        {/* Add FAQ section */}
+        {faqMetafield && <ProductFAQ faqMetafield={faqMetafield} />}
 
-      {/* Add FAQ section */}
-      {/* <ProductFAQ faqMetafield={faqMetafield} /> */}
 
-      {/* All Testimonials */}
-      {testimonialsMetafield && <Testimonials testimonials={testimonialsMetafield} />}
-      {qaMetafield && <QuestionsAndAnswers questions={JSON.parse(qaMetafield.value) as QAPosts} />}
+        {/* All Testimonials */}
+        {testimonialsMetafield && <Testimonials testimonials={testimonialsMetafield} />}
+        {qaMetafield && <QuestionsAndAnswers questions={JSON.parse(qaMetafield.value) as QAPosts} />}
+
+      </div>
       <Analytics.ProductView
         data={{
           products: [

@@ -7,9 +7,13 @@ import type {
   RecommendedProductsQuery,
 } from 'storefrontapi.generated';
 import { Button } from '~/components/ui/button';
+import VideoSection from '~/components/video-section';
+import ReelsGallery from '~/components/reels-gallery';
+import BeforeAfterSlider from '~/components/before-after-slider';
+import SkinCareRoutinePreview from '~/components/SkinCareRoutinePreview';
 
 export const meta: MetaFunction = () => {
-  return [{ title: 'Trgovina Matija | Home' }];
+  return [{ title: 'Vaš Kotiček Lepote | Domov' }];
 };
 
 export async function loader(args: LoaderFunctionArgs) {
@@ -60,8 +64,12 @@ export default function Homepage() {
   const data = useLoaderData<typeof loader>();
   return (
     <div className="home">
+      <VideoSection></VideoSection>
       <FeaturedCollection collection={data.featuredCollection} />
       <RecommendedProducts products={data.recommendedProducts} />
+      <ReelsGallery></ReelsGallery>
+      <BeforeAfterSlider></BeforeAfterSlider>
+      <SkinCareRoutinePreview />
     </div>
   );
 }
@@ -117,6 +125,8 @@ function FeaturedCollection({
           )}
         </div>
       </div>
+
+
     </section>
   );
 }
